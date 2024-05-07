@@ -4,15 +4,7 @@ import { Text } from 'components/text';
 import { useEnterSubmit } from './hooks/useEnterSubmit';
 
 import styles from './RadioGroup.module.scss';
-
-type OptionProps = {
-	value: OptionType['value'];
-	title: OptionType['title'];
-	selected: OptionType;
-	groupName: string;
-	onChange?: (option: OptionType) => void;
-	option: OptionType;
-};
+import { OptionProps } from 'src/types';
 
 export const Option = (props: OptionProps) => {
 	const { value, title, selected, groupName, onChange, option } = props;
