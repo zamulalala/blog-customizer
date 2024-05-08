@@ -12,13 +12,11 @@ export interface IArticleOptions {
 }
 
 export interface IArticleParamsFormProps {
-	toggleFormOpen: OnClick;
-	openState: boolean;
-	setPageState: React.Dispatch<React.SetStateAction<IArticleOptions>>;
+    setPageState: React.Dispatch<React.SetStateAction<IArticleOptions>>;
 }
 
 export interface IArticleProps {
-	closeForm: OnClick;
+	closeForm?: OnClick;
 }
 
 export interface ArrowButtonProps {

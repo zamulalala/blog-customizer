@@ -8,7 +8,6 @@ import { defaultArticleState } from './constants/articleProps';
 
 import './styles/index.scss';
 import styles from './styles/index.module.scss';
-import { useToggleForm } from './utils';
 import { IArticleOptions } from './types';
 
 const domNode = document.getElementById('root') as HTMLDivElement;
@@ -17,7 +16,6 @@ const root = createRoot(domNode);
 const App = () => {
 
 	const [pageState, setPageState] = useState<IArticleOptions>(defaultArticleState);
-	const { isFormOpen, toggleFormOpen, handleCloseForm } = useToggleForm();
 
 	return (
 		<div
@@ -32,11 +30,9 @@ const App = () => {
 				} as CSSProperties
 			}>
 			<ArticleParamsForm
-				toggleFormOpen={toggleFormOpen}
-				openState={isFormOpen}
 				setPageState={setPageState}
 			/>
-			<Article closeForm={handleCloseForm}/>
+			<Article />
 		</div>
 	);
 };
@@ -46,4 +42,3 @@ root.render(
 		<App />
 	</StrictMode>
 );
-

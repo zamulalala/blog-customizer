@@ -4,40 +4,71 @@ import { Text } from 'components/text';
 
 import styles from './ArticleParamsForm.module.scss';
 import { Select } from '../select';
-import { backgroundColors, contentWidthArr, defaultArticleState, fontColors, fontFamilyOptions, fontSizeOptions } from 'src/constants/articleProps';
+import { OptionType, backgroundColors, contentWidthArr, defaultArticleState, fontColors, fontFamilyOptions, fontSizeOptions } from 'src/constants/articleProps';
 import { RadioGroup } from '../radio-group';
 import { Separator } from '../separator';
-import { useArticleForm } from 'src/utils';
-import { IArticleParamsFormProps } from 'src/types';
-
+import { IArticleOptions, IArticleParamsFormProps } from 'src/types';
+import clsx from 'clsx';
+import { useState, useRef, useEffect, FormEvent } from 'react';
 
 export const ArticleParamsForm = ({
-	toggleFormOpen,
-	openState,
 	setPageState,
 }: IArticleParamsFormProps) => {
 
-	const { formState, handleChange, resetStates } = useArticleForm();
+    const [formState, setFormState] = useState<IArticleOptions>(defaultArticleState);
+	const formRef = useRef<HTMLDivElement>(null);
+	const [isFormOpen, setIsFormOpen] = useState(false);
 
-	const handleSubmit = (evt: React.SyntheticEvent) => {
+	const toggleFormOpen = () => {
+        setIsFormOpen((prevIsOpen) => !prevIsOpen);
+    };
+
+    const handleCloseForm = () => {
+        setIsFormOpen(false);
+    };
+
+	const handleClickOutside = (event: MouseEvent) => {
+		if (formRef.current && !formRef.current.contains(event.target as Node)) {
+			handleCloseForm();
+		}
+	};
+
+	useEffect(() => {
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, []);
+
+	const handleChange = (key: keyof IArticleOptions, value: OptionType) => {
+        setFormState((prevState) => ({
+            ...prevState,
+            [key]: value,
+        }));
+    };
+
+    const resetStates = () => {
+        setFormState(defaultArticleState);
+        setPageState(defaultArticleState);
+    };
+
+	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
         evt.preventDefault();
         setPageState(formState);
     };
 
-	const handleReset = () => {
-        resetStates();
-        setPageState(defaultArticleState);
-    };
-
-	const containerClasses = [styles.container, openState ? styles.container_open : ''].join(' ');
+	const containerClasses = clsx(styles.container, {
+		[styles.container_open]: isFormOpen,
+	});
 
 	return (
 		<>
-			<ArrowButton toggleFormOpen={toggleFormOpen} openState={openState} />
+			<ArrowButton toggleFormOpen={toggleFormOpen} openState={isFormOpen} />
 			<aside
+				ref={formRef}
 				className={containerClasses}>
 				<form className={styles.form} onSubmit={handleSubmit}>
-					<Text as='h1' size={31} weight={800} uppercase dynamicLite>
+					<Text as='h1' size={31} weight={800} uppercase>
 						Задайте параметры
 					</Text>
 					<Select
@@ -73,7 +104,7 @@ export const ArticleParamsForm = ({
 						onChange={(selected) => handleChange('contentWidth', selected)}
 					/>
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='reset' onClick={handleReset} />
+						<Button title='Сбросить' type='reset' onClick={resetStates} />
 						<Button title='Применить' type='submit' />
 					</div>
 				</form>
@@ -81,3 +112,4 @@ export const ArticleParamsForm = ({
 		</>
 	);
 };
+

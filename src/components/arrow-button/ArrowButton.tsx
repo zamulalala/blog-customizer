@@ -2,12 +2,17 @@ import arrow from 'src/images/arrow.svg';
 
 import styles from './ArrowButton.module.scss';
 import { ArrowButtonProps } from 'src/types';
+import clsx from 'clsx';
 
 
 export const ArrowButton = ({ toggleFormOpen, openState }: ArrowButtonProps) => {
 
-	const containerClasses = [styles.container, openState ? styles.container_open : ''].join(' ');
-    const arrowClasses = [styles.arrow, openState ? styles.arrow_open : ''].join(' ');
+	const containerClasses = clsx(styles.container, {
+		[styles.container_open]: openState,
+	});
+    const arrowClasses = clsx(styles.arrow, {
+		[styles.arrow_open]: openState,
+	});
 
     return (
         <div
